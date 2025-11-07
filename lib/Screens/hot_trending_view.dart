@@ -1,3 +1,4 @@
+import 'package:canada/Widgets/details_hotandtrend_sheet_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -69,18 +70,34 @@ class HotTrendingView extends GetView<HotTrendingVM> {
 // add this: floating circular INFO at the far right edge
           Positioned(
             right: 15,
-            bottom: 90 + safeBottom,   // align vertically with the row
-            child: _roundInfoButton(app_images.info),
+            bottom: 90 + safeBottom,   
+            child: _roundInfoButton(app_images.info, (){
+              Get.bottomSheet(
+                DraggableScrollableSheet(
+                  expand: false,
+                  minChildSize: 0.18,
+                  initialChildSize: 0.38,
+                  maxChildSize: 0.85,
+                  builder: (context, scrollController) {
+                    return DetailsHotandtrendSheetWidget(
+                      scrollController: scrollController,
+                    );
+                  },
+                ),
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                enableDrag: true,
+              );
+            }),
           ),
 
-// inside HotTrendingView's Stack (same level as _InfoRow)
           Positioned(
             left: 0,
             right: 0, // full bleed
             bottom: 15 + MediaQuery.paddingOf(context).bottom,
             child: const _SegmentBarRow(
               segments: 6,
-              activeIndex: 0, // bind to VM value when you add progress
+              activeIndex: 0, 
               gap: 6,
             ),
           ),
@@ -187,13 +204,13 @@ class _InfoRow extends StatelessWidget {
 
 
 
-Widget _roundInfoButton(String asset) {
+Widget _roundInfoButton(String asset, VoidCallback? onTap) {
   return Material(
     color: Colors.transparent,
     shape: const CircleBorder(),
     child: InkWell(
       customBorder: const CircleBorder(),
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         width: 40,
         height: 40,

@@ -33,7 +33,7 @@ class _FilterSheet2State extends State<FilterSheet2> {
   void initState() {
     super.initState();
     _gender = widget.initial.gender;
-    _ageMax = widget.initial.ageTo.toDouble();   // user moves this only
+    _ageMax = widget.initial.ageTo.toDouble();   
     _bill   = widget.initial.bill;
     _cats   = {...widget.initial.categories};
   }
@@ -41,8 +41,8 @@ class _FilterSheet2State extends State<FilterSheet2> {
   void _emit() {
     final data = widget.initial.copyWith(
       gender: _gender,
-      ageFrom: widget.initial.minAge,            // fixed lower bound
-      ageTo: _ageMax.round(),                    // from slider
+      ageFrom: widget.initial.minAge,            
+      ageTo: _ageMax.round(),                    
       bill: _bill,
       categories: _cats,
     );
@@ -114,7 +114,7 @@ class _FilterSheet2State extends State<FilterSheet2> {
                     child: bodyText(
                       'Adjust your discovery preferences.',
                       size: 14,
-                      color: Colors.white.withOpacity(0.80),
+                      color: Colors.white.withValues(alpha: 0.80),
                     ),
                   ),
                 ),
@@ -166,7 +166,7 @@ class _FilterSheet2State extends State<FilterSheet2> {
                 bodyText(
                   '${widget.initial.minAge} - ${_ageMax.round()} years',
                   size: 12,
-                  color: Colors.white.withOpacity(0.85),
+                  color: Colors.white.withValues(alpha: 0.85),
                 ),
                 const SizedBox(height: 14),
 

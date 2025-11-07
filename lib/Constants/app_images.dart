@@ -93,7 +93,9 @@ class app_images {
   static const invite_friends = 'assets/images/invite_friends.svg';
   static const lina_arrow = 'assets/images/lina_arrow.svg';
   static const moments = 'assets/images/moments.png';
-
+  static const phoneIcon = "assets/images/phoneIcon.svg";
+  static const timeIcon = "assets/images/timeicon.svg";
+  static const visitWebIcon = "assets/images/visitweb.svg";
 
 
 

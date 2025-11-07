@@ -23,21 +23,25 @@ class CustomTextInputWidget extends StatelessWidget {
   final String? inputFontFamily;
   final double? inputFontSize;
   final Color? inputFontColor;
+  final Color? fillColor;
+  final Function()? ontap;
 
-  // Hints / behavior
+  // Hints / behavior 
   final String? hintText;
   final TextStyle? hintStyle;
   final bool obscureText;
+  final bool? isReadOnly;
 
   const CustomTextInputWidget({
     super.key,
     required this.controller,
     this.validator,
     required this.border,
-
+    this.isReadOnly = false,
     // Layout
     this.padding,
-
+    this.fillColor,
+    this.ontap,
     // Icons
     this.prefixIcon,
     this.suffixIcon,
@@ -77,16 +81,19 @@ class CustomTextInputWidget extends StatelessWidget {
         validator: validator,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         obscureText: obscureText,
+        onTap: ontap ?? (){},
+        onTapOutside: (event) => FocusScope.of(context).unfocus(),
         style: textStyle,
+        readOnly: isReadOnly ?? false,
         decoration: InputDecoration(
           isDense: true,
           contentPadding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
           filled: true,
-          fillColor: const Color(0xFFE9E9EB),
+          fillColor: fillColor ?? const Color(0xFFE9E9EB),
 
           hintText: hintText,
           hintStyle: hintStyle,
-
+        
           prefixIcon: prefixIcon,
           suffixIcon: suffixIcon,
 

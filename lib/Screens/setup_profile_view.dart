@@ -578,13 +578,13 @@ class SetupProfileView extends StatelessWidget {
                     onPressed: vm.saveAndGoNext,
                     style: ButtonStyle(
                       backgroundColor:
-                      const MaterialStatePropertyAll(AppColors.black),
+                      const WidgetStatePropertyAll(AppColors.black),
                       foregroundColor:
-                      const MaterialStatePropertyAll(AppColors.white),
-                      overlayColor: MaterialStatePropertyAll(
+                      const WidgetStatePropertyAll(AppColors.white),
+                      overlayColor: WidgetStatePropertyAll(
                           AppColors.black.withOpacity(0.08)),
-                      elevation: const MaterialStatePropertyAll(0),
-                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                      elevation: const WidgetStatePropertyAll(0),
+                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4))),
                     ),
                     child: const CustomTextWidget(
