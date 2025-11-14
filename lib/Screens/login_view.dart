@@ -1,4 +1,7 @@
-import 'package:canada/Constants/main_nav_view.dart';
+
+import 'package:canada/Widgets/custom_button_widget.dart';
+import 'package:canada/Widgets/custom_text_input_widget.dart';
+import 'package:canada/Widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -11,7 +14,9 @@ import '../view_model/login_view_model.dart';
 import 'forgot_password_view.dart';
 
 class LoginView extends StatelessWidget {
-  const LoginView({super.key});
+  LoginView({super.key});
+
+  final _formKey = GlobalKey<FormState>();
 
   static const _font = 'Helvetica';
   static const _bold = 'Helvetica-Bold';
@@ -116,52 +121,14 @@ class LoginView extends StatelessWidget {
       return Image.asset(path, width: w, height: h, color: color);
     }
 
-    // CTA login (full width inside the constrained card)
-    Widget loginButton() => SizedBox(
-      height: _ctaH,
-      width: double.infinity,
-      child: Obx(() => ElevatedButton(
-        onPressed: vm.isLoading.value ? null : () => Get.offAll(MainNavView()),
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
-          backgroundColor: AppColors.black,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-        child: vm.isLoading.value
-            ? const SizedBox(
-            width: 20, height: 20,
-            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-            : const Text('Log In',
-            style: TextStyle(fontFamily: _bold, fontWeight: FontWeight.w700, fontSize: 14)),
-      )),
-    );
-
-    // CTA restaurants
-    Widget restaurantsButton() => SizedBox(
-      height: 40,
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () => Get.toNamed(AppRoutes.partner),
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
-          backgroundColor: AppColors.black,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-        ),
-        child: const Text(
-          'Click here',
-          style: TextStyle(fontFamily: _bold, fontWeight: FontWeight.w700, fontSize: 12),
-        ),
-      ),
-    );
+   
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(horizontalPad, 24, horizontalPad, 16),
+          padding: EdgeInsets.fromLTRB(horizontalPad, 2, horizontalPad, 16),
           child: Center(
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: cardMaxWidth),
@@ -170,12 +137,12 @@ class LoginView extends StatelessWidget {
                 children: [
                   const SizedBox(height: 8),
                   Image.asset(vm.model.logo, height: 180, fit: BoxFit.contain),
-                  const SizedBox(height: 12),
+                 
 
                   // card stretches to maxWidth and stays centered
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                    padding: const EdgeInsets.symmetric(horizontal:  16, vertical:  10,),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
@@ -185,7 +152,7 @@ class LoginView extends StatelessWidget {
                       ],
                     ),
                     child: Form(
-                      key: vm.formKey,
+                      key: _formKey,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -193,6 +160,8 @@ class LoginView extends StatelessWidget {
                           const SizedBox(height: 6),
 
                           // Facebook
+                      
+
                           SizedBox(
                             height: 40,
                             child: ElevatedButton.icon(
@@ -210,7 +179,7 @@ class LoginView extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SpacerWidget(height: 3),
 
                           // Instagram
                           SizedBox(
@@ -257,28 +226,62 @@ class LoginView extends StatelessWidget {
 
                           // Email
                           Align(alignment: Alignment.centerLeft, child: _formLabel('Email')),
-                          TextFormField(
-                            controller: vm.emailCtrl,
-                            keyboardType: TextInputType.emailAddress,
-                            validator: vm.validateEmail,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            style: const TextStyle(fontFamily: _font, fontSize: 14, color: AppColors.black_text),
-                            decoration: _fieldBox('Enter your email'),
-                          ),
+                        CustomTextInputWidget(
+                                controller: vm.emailCtrl,
+                               
+                                validator: (v) => vm.validateEmail(v),
+                                hintText: 'example@gmail.com',
+                                // rounded, NO visible border (matches screenshot)
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide.none,
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide.none,
+                                ),
+                                errorBorder: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide(color: AppColors.redColorError),
 
-                          const SizedBox(height: 12),
+                                ),
+                                focusedErrorBorder: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide(color: AppColors.redColorError),
+
+                                ),
+                             
+                              ),
+                         
+
+                          const SpacerWidget(height: 5),
 
                           // Password
                           Align(alignment: Alignment.centerLeft, child: _formLabel('Password')),
-                          Obx(() => TextFormField(
-                            controller: vm.passCtrl,
+                         Obx(() =>   CustomTextInputWidget(
+                                 controller: vm.passCtrl,
                             obscureText: vm.obscurePass.value,
                             validator: vm.validatePassword,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            style: const TextStyle(fontFamily: _font, fontSize: 14, color: AppColors.black_text),
-                            decoration: _fieldBox(
-                              'Enter your password',
-                              suffix: IconButton(
+                                hintText: 'Enter your password',
+                                // rounded, NO visible border (matches screenshot)
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide.none,
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide.none,
+                                ),
+                                errorBorder: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide(color: AppColors.redColorError),
+                                ),
+                                focusedErrorBorder: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide(color: AppColors.redColorError),
+
+                                ),
+                             suffixIcon: IconButton(
                                 padding: EdgeInsets.zero,
                                 splashRadius: 18,
                                 onPressed: vm.obscurePass.toggle,
@@ -287,8 +290,8 @@ class LoginView extends StatelessWidget {
                                   size: 20, color: AppColors.greyshade3,
                                 ),
                               ),
-                            ),
-                          )),
+                              )),
+                        
 
                           const SizedBox(height: 6),
                           Align(
@@ -300,7 +303,7 @@ class LoginView extends StatelessWidget {
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               onPressed: () => Get.to(
-                                    () => const ForgotPasswordView(),
+                                    () => ForgotPasswordView(),
                                 transition: Transition.cupertino,
                               ),
                               child: const Text(
@@ -313,7 +316,8 @@ class LoginView extends StatelessWidget {
                           const SizedBox(height: 6),
 
                           // Log In
-                          loginButton(),
+                         Obx( () => CustomButton(text: "Login", isLoading: vm.isLoading.value, onTap:  vm.isLoading.value ? null : () => vm.submit(_formKey.currentState),)),
+                          // loginButton(),
 
                           const SizedBox(height: 12),
                           const Divider(color: Color(0xFFE6E6E6), thickness: 1),
@@ -354,7 +358,7 @@ class LoginView extends StatelessWidget {
                             style: TextStyle(fontFamily: _font, fontSize: 12, color: AppColors.greyshade1),
                           ),
                           const SizedBox(height: 6),
-                          restaurantsButton(),
+                          CustomButton(text: "Click here", onTap:  () => Get.toNamed(AppRoutes.partner))
                         ],
                       ),
                     ),

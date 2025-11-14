@@ -8,7 +8,6 @@ class LoginViewModel extends GetxController {
   final LoginModel model;
   LoginViewModel(this.model);
 
-  final formKey = GlobalKey<FormState>();
   late final TextEditingController emailCtrl;
   late final TextEditingController passCtrl;
 
@@ -37,8 +36,8 @@ class LoginViewModel extends GetxController {
     return null;
   }
 
-  Future<void> submit() async {
-    if (!(formKey.currentState?.validate() ?? false)) return;
+  Future<void> submit(FormState? form) async {
+    if (!(form?.validate() ?? false)) return;
     isLoading.value = true;
     try {
       // TODO: call your login API

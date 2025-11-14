@@ -59,8 +59,7 @@ class HungryActiveVM extends GetxController {
   }
 
     toggleHungryOff(){
-      print(vmm.isActiveNow.value);
-      vmm.isActiveNow.value = false; 
+      vmm.showLanding();
     }
 
 

@@ -27,7 +27,7 @@ class SettingsView extends GetView<SettingsVM> {
         backgroundColor: AppColors.white,
         foregroundColor: AppColors.black,
         titleSpacing: 0,
-        title: headingText('Setting', size: 26, color: AppColors.black),
+        title: headingText('Settings', size: 26, color: AppColors.black),
         leading: IconButton(
           icon: SvgPicture.asset(
             app_images.back_icon,
@@ -111,7 +111,7 @@ class SettingsView extends GetView<SettingsVM> {
             const _SectionHeader('Notification'),
             _SwitchTile(
               icon: app_images.notification,
-              label: 'Push notification',
+              label: 'Push Notifications',
               value: controller.pushNotifications.value,
               onChanged: (v) => controller.pushNotifications.value = v,
             ),

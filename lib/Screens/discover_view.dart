@@ -1,5 +1,13 @@
 // lib/Screens/discover_view.dart
+import 'dart:ui';
+
 import 'package:canada/Screens/spotlight_view.dart';
+import 'package:canada/Widgets/custom_text_widget.dart';
+import 'package:canada/Widgets/filter_widget.dart';
+import 'package:canada/Widgets/glass_chip_widget.dart';
+import 'package:canada/Widgets/latest_people_filter_widget.dart';
+import 'package:canada/Widgets/spacer_widget.dart';
+import 'package:canada/Widgets/spotlight_bottom_sheet_widget.dart';
 import 'package:canada/view_model/likes_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -18,11 +26,14 @@ import 'likes_view.dart';
 class DiscoverView extends GetView<DiscoverVM> {
   DiscoverView({super.key});
 
+
+
   @override
   DiscoverVM get controller => Get.put(DiscoverVM());
   final HotTrendingVM hotVM = Get.put(HotTrendingVM(), permanent: true);
 // register VM once (like HotTrendingVM)
   final SpotlightVM spotlightVM = Get.put(SpotlightVM(), permanent: true);
+
   final LikesVM likesVM = Get.put(LikesVM(), permanent: true);
   @override
   Widget build(BuildContext context) {
@@ -48,7 +59,6 @@ class DiscoverView extends GetView<DiscoverVM> {
             }),
           ),
       
-          // ---------- SEGMENTED HEADER + FILTER ----------
           Positioned(
             left: 0,
             right: 0,
@@ -61,7 +71,22 @@ class DiscoverView extends GetView<DiscoverVM> {
                   children: [
                     Expanded(child: _tabsBar()),
                     const SizedBox(width: 2),
-                    _filterIconSvg(onTap: controller.openFilter),
+                   Obx( () => _filterIconSvg(onTap:controller.tab.value.index == 1 ? () {
+                       Get.bottomSheet(
+       FilterBottomSheet()
+          // You already had this prop — we feed it a pill that opens the anchored menu
+     ,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent, 
+      barrierColor: Colors.black54,
+      enableDrag: true,
+    ); 
+                    } :
+      //               : controller.tab.value.index == 2 ? () {
+      //                 Get.bottomSheet(SpotLightBottomSheet(),  backgroundColor: Colors.transparent, 
+      // barrierColor: Colors.black54,);
+      //               } : 
+                    controller.openFilter)),
                     const SizedBox(width: 12),
       
                   ],
@@ -74,7 +99,7 @@ class DiscoverView extends GetView<DiscoverVM> {
     );
   }
 
-  // -------------------- TABS BAR --------------------
+
   Widget _tabsBar() {
     final items = [
       ['People', DiscoverTab.people],
@@ -93,18 +118,17 @@ class DiscoverView extends GetView<DiscoverVM> {
           return GestureDetector(
             onTap: () => controller.setTab(tab),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
                 color: selected ? Colors.black : Colors.transparent,
                 borderRadius: BorderRadius.circular(19),
               ),
-              child: Text(
-                label,
-                style: const TextStyle(
+              child: CustomTextWidget(
+               text:  label,
                   color: Colors.white,
                   fontSize: 12.5,
-                  fontWeight: FontWeight.w700,
-                ),
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.normal,
+                
               ),
             ),
           );
@@ -124,19 +148,7 @@ class DiscoverView extends GetView<DiscoverVM> {
               fit: StackFit.expand,
               children: [
                 Obx(() => Image.asset(controller.photo, fit: BoxFit.cover)),
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Container(
-                    height: 140,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Color(0xCC000000), Color(0x00000000)],
-                      ),
-                    ),
-                  ),
-                ),
+                
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
@@ -163,84 +175,82 @@ class DiscoverView extends GetView<DiscoverVM> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  controller.nameAge,
-                  style: const TextStyle(
-                    fontFamily: 'Helvetica-Bold',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                    color: Colors.white,
-                    height: 1.1,
-                  ),
-                ),
-                const SizedBox(height: 6),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _svg(app_images.tdesign_location, size: 16),
-                    const SizedBox(width: 6),
-                    Text(
-                      '${_fmtMiles(controller.milesAway)} miles away',
-                      style: const TextStyle(color: Colors.white70, fontSize: 12),
+                    CustomTextWidget(
+                     text:  controller.nameAge,
+                      
+                        fontFamily: 'Helvetica-Bold',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 22,
+                        color: Colors.white,
+                        height: 1.1,
                     ),
+                    const SizedBox(width: 6),
+                    GlassChip(text: '${_fmtMiles(controller.milesAway)} miles away', 
+                    svg:_svg(app_images.tdesign_location, size: 16), iconPath: app_images.tdesign_location, ),
                   ],
                 ),
-                const SizedBox(height: 14),
+                
+                const SpacerWidget(height: 4),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
-                      'In For:',
-                      style: TextStyle(
+                    const CustomTextWidget(
+                     text:  'In For:',
+                    
                         color: Colors.white,
                         fontSize: 12.5,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Helvetica-Bold',
-                      ),
+                      
                     ),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: controller.inFor.map((t) => _chip(t)).toList(),
+                      child: Row(
+                        spacing: 4,
+                       
+                        children: controller.inFor.map((t) {
+                         final g = _chipIconFor(t);
+                          return GlassChip(text:t, iconPath: g!, svg: _svg(g),);
+                        }).toList(),
                       ),
                     ),
                     const SizedBox(width: 8),
             // suppose you have the current DiscoverProfile in `controller.profile.value`
-            _roundIcon(
-            app_images.info,
-            size: 31,
-            onTap: () {
+            GestureDetector(
+               onTap: () {
             final d = controller.profile.value;
             if (d != null) controller.openInfo(d);
             },
+              child: GlassCard(
+                borderRadius: 40,
+                child: SvgPicture.asset( app_images.info, height: 18,),
+              ),
             ),
-
             ],
                 ),
                 const SizedBox(height: 15),
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {
-                      Get.to(
-                            () => const BioView(),
-                        binding: BindingsBuilder(() {
-                          if (!Get.isRegistered<BioVM>()) Get.put(BioVM());
-                        }),
-                      );
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text(
-                        'Looking for a fun dinner spot tonight!',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Helvetica',
-                        ),
-                      ),
+                InkWell(
+                  onTap: () {
+                    Get.to(
+                          () => const BioView(),
+                      binding: BindingsBuilder(() {
+                        if (!Get.isRegistered<BioVM>()) Get.put(BioVM());
+                      }),
+                    );
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: CustomTextWidget(
+                     text:  'Looking for a fun dinner spot tonight!',
+                    
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Helvetica',
+                      
                     ),
                   ),
                 ),
@@ -328,17 +338,17 @@ class DiscoverView extends GetView<DiscoverVM> {
         onTap: onTap,
         customBorder: const CircleBorder(),
         child: Container(
-          
+          padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.black.withOpacity(0.85),
-            border: Border.all(color: Colors.white24, width: 1),
+            shape: BoxShape.rectangle,
+            // color: Colors.black.withValues(alpha: 0.85),
+            // border: Border.all(color: Colors.white24, width: 1),
           ),
           alignment: Alignment.center,
           child: SvgPicture.asset(
             app_images.white_filter,
-            width: 16,
-            height: 16,
+            width: 20,
+            height: 20,
             colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
           ),
         ),
@@ -366,35 +376,7 @@ class DiscoverView extends GetView<DiscoverVM> {
         return null;
     }
   }
-
-  static Widget _chip(String text) {
-    final iconPath = _chipIconFor(text);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.85),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: Colors.white24, width: 1),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (iconPath != null) ...[
-            _svg(iconPath, size: 16),
-            const SizedBox(width: 6),
-          ],
-          Text(
-            text,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  
 
   static Widget _actionButton(String asset, {VoidCallback? onTap, bool big = false}) {
     return InkResponse(

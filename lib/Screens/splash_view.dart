@@ -72,7 +72,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
       ),
     );
 
-    // Start animations
+
     _logoController.forward().then((_) {
       _textController.forward();
     });
@@ -89,41 +89,45 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: R.w(context, 10)),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FadeTransition(
-                opacity: _logoFade,
-                child: ScaleTransition(
-                  scale: _logoScale,
-                  child: Image.asset(
-                    app_images.dit_logo,
-                    width: R.w(context, 250),
+      body: Container(
+        height: context.screenHeight,
+        width: context.screenWidth,
+        decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage(app_images.splashBg), fit: BoxFit.cover)
+        ),
+        padding: EdgeInsets.symmetric(horizontal: R.w(context, 10)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 10,
+          children: [
+            FadeTransition(
+              opacity: _logoFade,
+              child: ScaleTransition(
+                scale: _logoScale,
+                child: Image.asset(
+                  app_images.spalshLogo,
+                  fit: BoxFit.contain,
+                  width: R.w(context, 50),
+                ),
+              ),
+            ),
+            SlideTransition(
+              position: _textSlide,
+              child: FadeTransition(
+                opacity: _textFade,
+                child: Text(
+                  AppStrings.tagline,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.text,
+                    fontFamily: 'Helvetica',
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
-              SlideTransition(
-                position: _textSlide,
-                child: FadeTransition(
-                  opacity: _textFade,
-                  child: Text(
-                    AppStrings.tagline,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.text,
-                      fontFamily: 'Helvetica',
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

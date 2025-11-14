@@ -5,7 +5,6 @@ import '../Models/partner_model.dart';
 class PartnerWithDineTimeVM extends GetxController {
   final PartnerWithDineTimeModel model;
 
-  final formKey = GlobalKey<FormState>();
   final TextEditingController emailCtrl = TextEditingController();
   final RxBool isSubmitting = false.obs;
 
@@ -19,8 +18,8 @@ class PartnerWithDineTimeVM extends GetxController {
     return null;
   }
 
-  Future<void> submit() async {
-    if (!(formKey.currentState?.validate() ?? false)) return;
+  Future<void> submit(FormState? form) async {
+    if (!(form?.validate() ?? false)) return;
     isSubmitting.value = true;
     await Future.delayed(const Duration(milliseconds: 900));
     isSubmitting.value = false;

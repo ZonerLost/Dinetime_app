@@ -1,7 +1,10 @@
 // lib/Screens/chat_view.dart
+import 'package:canada/Widgets/custom_text_widget.dart';
+import 'package:canada/Widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 
 import '../Constants/app_images.dart';
 import '../Models/chat_models.dart';
@@ -21,12 +24,14 @@ class ChatView extends GetView<ChatVM> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          children: [
-            // Top bar (search + right icons)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-              child: Obx( () {
+        child: Padding(
+                       padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Top bar (search + right icons)
+              Obx( () {
                 final isDetail = controller.activeThread.value != null;
                  return !isDetail ? Row(
                   children: [
@@ -61,59 +66,66 @@ class ChatView extends GetView<ChatVM> {
                   ],
               ) : AbsorbPointer() ;}
               ),
-            ),
-          if(  controller.activeThread.value == null)
-            const SizedBox(height: 10),
-
-            Obx(() {
-              final isDetail = controller.activeThread.value != null;
-              if (isDetail) return const SizedBox.shrink();
-              return SizedBox(
-                height: 94,
-                child: ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
+            if(  controller.activeThread.value == null)
+              const SizedBox(height: 10),
+          
+              Obx(() {
+                final isDetail = controller.activeThread.value != null;
+                if (isDetail) return const SizedBox.shrink();
+                return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: controller.stories.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 14),
-                  itemBuilder: (context, i) =>
-                      _StoryChip(user: controller.stories[i]),
-                ),
-              );
-            }),
-
-            Expanded(
-              child: Obx(() {
-                final thread = controller.activeThread.value;
-                if (thread != null) {
-                  return ChatDetailView(thread: thread);
-                }
-
-                // List screen
-                final items = controller.filteredThreads;
-                if (items.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      'No conversations',
-                      style: TextStyle(color: Colors.black54),
-                    ),
-                  );
-                }
-                return ListView.builder(
-                  padding: EdgeInsets.fromLTRB(12, 8, 12, safeBottom + 12),
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: items.length,
-                  itemBuilder: (context, i) {
-                    final t = items[i];
-                    return InkWell(
-                      onTap: () => controller.openThread(t.id),
-                      child: _ThreadTile(thread: t),
-                    );
-                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: List.generate( controller.stories.length , (i) =>
+                        _StoryChip(user: controller.stories[i]),),
+                  ),
                 );
               }),
-            ),
-          ],
+               
+              Expanded(
+                child: Obx(() {
+                  final thread = controller.activeThread.value;
+                  if (thread != null) {
+                    return ChatDetailView(thread: thread);
+                  }
+          
+                  // List screen
+                  final items = controller.filteredThreads;
+                  if (items.isEmpty) {
+                    return const Center(
+                      child: CustomTextWidget(
+                       text:  'No conversations',
+                        color: Colors.black54,
+                      ),
+                    );
+                  }
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                       SpacerWidget(height: 5),
+                CustomTextWidget(text: "Messages", fontWeight: FontWeight.bold, fontSize: 16,),
+                SpacerWidget(height: 2),
+                      Expanded(
+                        child: ListView.builder(
+                          // padding: EdgeInsets.fromLTRB(12, 8, 12, safeBottom + 12),
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: items.length,
+                          itemBuilder: (context, i) {
+                            final t = items[i];
+                            return InkWell(
+                              onTap: () => controller.openThread(t.id),
+                              child: _ThreadTile(thread: t),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -159,42 +171,43 @@ class _SearchField extends StatelessWidget {
     );
   }
 }
-
 class _StoryChip extends StatelessWidget {
   const _StoryChip({required this.user});
   final StoryUser user;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ClipOval(
-          child: Image.asset(
-            user.photo,
-            width: 48,
-            height: 48,
-            fit: BoxFit.cover,
-          ),
-        ),
-        const SizedBox(height: 6),
-        SizedBox(
-          width: 60,
-          child: Text(
-            user.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 11,
-              color: Colors.black87,
-              fontWeight: FontWeight.w600,
+    return Container(
+      margin: EdgeInsets.only(right: 12), // spacing between items
+      width: 70, // fix the width so they align cleanly
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.asset(
+              user.photo,
+              width: 70,
+              height: 88,
+              fit: BoxFit.cover,
             ),
           ),
-        ),
-      ],
+          const SizedBox(height: 6),
+          CustomTextWidget(
+           text:  user.name,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            
+          ),
+        ],
+      ),
     );
   }
 }
+
 
 class _ThreadTile extends StatelessWidget {
   const _ThreadTile({required this.thread});
@@ -212,8 +225,8 @@ class _ThreadTile extends StatelessWidget {
           ClipOval(
             child: Image.asset(
               thread.avatar,
-              width: 44,
-              height: 44,
+              width: 50,
+              height: 50,
               fit: BoxFit.cover,
             ),
           ),
@@ -225,14 +238,14 @@ class _ThreadTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Title
-                Text(
-                  thread.title,
+                CustomTextWidget(
+                 text:  thread.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                
                     fontWeight: FontWeight.w700,
                     fontSize: 15,
-                  ),
+                  
                 ),
                 const SizedBox(height: 3),
                 // Preview

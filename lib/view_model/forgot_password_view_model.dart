@@ -6,7 +6,6 @@ class ForgotPasswordVM extends GetxController {
   final ForgotPasswordModel model;
   ForgotPasswordVM(this.model);
 
-  final formKey = GlobalKey<FormState>();
   final emailCtrl = TextEditingController();
 
   final isLoading = false.obs;
@@ -21,8 +20,8 @@ class ForgotPasswordVM extends GetxController {
     return null;
   }
 
-  Future<void> send() async {
-    if (!(formKey.currentState?.validate() ?? false)) return;
+  Future<void> send(FormState? form) async {
+    if (!(form?.validate() ?? false)) return;
     isLoading.value = true;
     await Future.delayed(const Duration(milliseconds: 500)); // mock request
     isLoading.value = false;

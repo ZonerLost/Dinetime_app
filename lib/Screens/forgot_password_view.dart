@@ -1,3 +1,5 @@
+import 'package:canada/Widgets/custom_button_widget.dart';
+import 'package:canada/Widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/gestures.dart';
@@ -11,13 +13,15 @@ import '../view_model/forgot_password_view_model.dart';
 
 
 class ForgotPasswordView extends StatelessWidget {
-  const ForgotPasswordView({super.key});
+  ForgotPasswordView({super.key});
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     final vm = Get.put(
       ForgotPasswordVM(
-        ForgotPasswordModel(heroAsset: app_images.app_images.signup_here),
+        ForgotPasswordModel(heroAsset: app_images.app_images.dit_logo),
       ),
     );
 
@@ -92,11 +96,9 @@ class ForgotPasswordView extends StatelessWidget {
         final sent = vm.isSent.value;
 
         return Scaffold(
-          backgroundColor: Colors.transparent,
+          backgroundColor: AppColors.background,
 
-          bottomNavigationBar: sent
-              ? bottomBar(label: 'Verify', onTap: vm.verify)
-              : bottomBar(label: 'Send', onTap: vm.send, loading: vm.isLoading.value),
+                      
 
           body: SafeArea(
             bottom: false,
@@ -109,29 +111,29 @@ class ForgotPasswordView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 6),
+                      const SpacerWidget(height: 16),
 
                       // Hero
                       ConstrainedBox(
                         constraints: BoxConstraints(maxWidth: heroMaxWidth),
                         child: Image.asset(
                           vm.model.heroAsset,
-                          height: 240,
+                          height: 90,
                           fit: BoxFit.contain,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SpacerWidget(height: 3),
 
                       // Title
                       headingText(sent ? 'Password Reset' : 'Forgot Password',
                           size: 26, color: AppColors.black, align: TextAlign.center),
-                      const SizedBox(height: 16),
+                      const SpacerWidget(height: 16),
 
                       // Content
                       if (!sent)
                         formCard(
                           Form(
-                            key: vm.formKey,
+                            key: _formKey,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -201,7 +203,7 @@ class ForgotPasswordView extends StatelessWidget {
                                       style: const TextStyle(fontWeight: FontWeight.w700),
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = () {
-                                          // TODO: open mail app or deep-link
+                                          
                                         },
                                     ),
                                   ],
@@ -211,12 +213,19 @@ class ForgotPasswordView extends StatelessWidget {
                           ),
                         ),
 
+                        
                       const SizedBox(height: 20),
                     ],
                   ),
                 ),
               ),
             ),
+          ),
+          bottomNavigationBar: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 35, horizontal: 25),
+            child: CustomButton(text: sent ? 'Verify' :'Send', 
+                         onTap: () => vm.send(_formKey.currentState),
+                    isLoading: vm.isLoading.value,),
           ),
         );
       }),

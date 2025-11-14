@@ -1,5 +1,6 @@
 // main_nav_view.dart
 import 'package:canada/Controllers/nav_bar_controller.dart';
+import 'package:canada/Widgets/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:canada/Screens/hungry_now_view.dart';
 import 'package:canada/Screens/discover_view.dart';
@@ -36,7 +37,7 @@ class _MainNavViewState extends State<MainNavView> {
     DtNavItem(app_images.ic_tab_discover,     'Discover'),
     DtNavItem(app_images.ic_tab_reservations, 'Reservations'),
     DtNavItem(app_images.ic_tab_chat,         'Chat'),
-    DtNavItem(app_images.ic_tab_profile,      'Profile'),
+    DtNavItem(app_images.picture1,      'Profile'),
   ];
 
   @override
@@ -61,11 +62,11 @@ class _MainNavViewState extends State<MainNavView> {
 
 
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 2, bottom: 10),
+                  padding: const EdgeInsets.only(top: 6, bottom: 10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SvgPicture.asset(
+                    i == 4 ? CircleAvatar(backgroundImage: AssetImage(app_images.picture1), radius: 12,)  :  SvgPicture.asset(
                         item.iconPath,
                         height: 20,
                         color: i == 2 ? null :  selected
@@ -73,18 +74,18 @@ class _MainNavViewState extends State<MainNavView> {
                             :  Colors.white
                       ),
                       const SizedBox(height: 10),
-                      Text(
-                        item.label,
+                      CustomTextWidget(
+                       text:  item.label,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
+                        
                           fontSize: 10,
                           height: 1.0,
                           color: selected
                               ? Colors.white
                               : Colors.white.withOpacity(0.75),
                         ),
-                      ),
+                      
                     ],
                   ),
                 ),

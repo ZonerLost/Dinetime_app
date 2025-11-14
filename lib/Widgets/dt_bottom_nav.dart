@@ -31,7 +31,7 @@ class DtBottomNav extends StatelessWidget {
     final isSmall  = w < 380;
     final isTablet = w >= 600;
 
-    final double barHeight = isTablet ? 70 : (isSmall ? 58 : 62);
+    final double barHeight = isTablet ? 70 : (isSmall ? 62 : 62);
     final double iconSize  = isTablet ? 26 : (isSmall ? 20 : 22);
     final double fontSize  = isTablet ? 12.0 : (isTiny ? 10.0 : (isSmall ? 10.5 : 11.0));
     final double gap       = isSmall ? 4 : 6;

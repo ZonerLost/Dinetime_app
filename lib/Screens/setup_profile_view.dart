@@ -505,69 +505,69 @@ class SetupProfileView extends StatelessWidget {
             
               SizedBox(height: R.h(context, 3)),
             
-              const CustomTextWidget(
-                text: 'HOBBIES',
-                fontFamily: kBoldFont,
-                fontWeight: FontWeight.w700,
-                fontSize: 14,
-                color: AppColors.greyshade3,
-                height: 1,
-              ),
+              // const CustomTextWidget(
+              //   text: 'HOBBIES',
+              //   fontFamily: kBoldFont,
+              //   fontWeight: FontWeight.w700,
+              //   fontSize: 14,
+              //   color: AppColors.greyshade3,
+              //   height: 1,
+              // ),
               SizedBox(height: R.h(context, 0.8)),
-              bodyText(
-                'Select your hobbies to share with potential matches',
-                size: 14,
-                color: AppColors.greyshade2,
-                height: 1.2,
-              ),
-              SizedBox(height: R.h(context, 2)),
+              // bodyText(
+              //   'Select your hobbies to share with potential matches',
+              //   size: 14,
+              //   color: AppColors.greyshade2,
+              //   height: 1.2,
+              // ),
+              // SizedBox(height: R.h(context, 2)),
             
-              LayoutBuilder(builder: (context, c) {
-                const spacing = 12.0;
-                const cols = 2;
-                final chipW =
-                    (c.maxWidth - spacing * (cols - 1)) / cols;
+              // LayoutBuilder(builder: (context, c) {
+              //   const spacing = 12.0;
+              //   const cols = 2;
+              //   final chipW =
+              //       (c.maxWidth - spacing * (cols - 1)) / cols;
             
-                return Obx(() => Wrap(
-                  spacing: spacing,
-                  runSpacing: spacing,
-                  children: vm.hobbies.map((h) {
-                    final selected =
-                    vm.selectedHobbies.contains(h);
-                    return SizedBox(
-                      width: chipW,
-                      height: 44,
-                      child: OutlinedButton(
-                        onPressed: () => vm.toggleHobby(h),
-                        style: OutlinedButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          backgroundColor: selected
-                              ? AppColors.black
-                              : Colors.white,
-                          side: BorderSide(
-                              color: selected
-                                  ? AppColors.black
-                                  : const Color(0xFFE6E6E6)),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                          foregroundColor: selected
-                              ? Colors.white
-                              : AppColors.black,
-                        ),
-                        child: CustomTextWidget(
-                          text: h,
-                          fontFamily: kBoldFont,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14,
-                          color: selected
-                              ? Colors.white
-                              : AppColors.black,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ));
-              }),
+              //   return Obx(() => Wrap(
+              //     spacing: spacing,
+              //     runSpacing: spacing,
+              //     children: vm.hobbies.map((h) {
+              //       final selected =
+              //       vm.selectedHobbies.contains(h);
+              //       return SizedBox(
+              //         width: chipW,
+              //         height: 44,
+              //         child: OutlinedButton(
+              //           onPressed: () => vm.toggleHobby(h),
+              //           style: OutlinedButton.styleFrom(
+              //             padding: EdgeInsets.zero,
+              //             backgroundColor: selected
+              //                 ? AppColors.black
+              //                 : Colors.white,
+              //             side: BorderSide(
+              //                 color: selected
+              //                     ? AppColors.black
+              //                     : const Color(0xFFE6E6E6)),
+              //             shape: RoundedRectangleBorder(
+              //                 borderRadius: BorderRadius.circular(12)),
+              //             foregroundColor: selected
+              //                 ? Colors.white
+              //                 : AppColors.black,
+              //           ),
+              //           child: CustomTextWidget(
+              //             text: h,
+              //             fontFamily: kBoldFont,
+              //             fontWeight: FontWeight.w700,
+              //             fontSize: 14,
+              //             color: selected
+              //                 ? Colors.white
+              //                 : AppColors.black,
+              //           ),
+              //         ),
+              //       );
+              //     }).toList(),
+              //   ));
+              // }),
             
               SizedBox(height: R.h(context, 3)),
               Center(

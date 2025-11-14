@@ -12,14 +12,36 @@ import '../Widgets/filter_sheet.dart';
 import '../Widgets/mini_switch.dart';
 
 import '../Models/hungry_active_model.dart';
+import '../Models/hungry_now_model.dart';
 import '../view_model/hungry_active_view_model.dart';
 
 class HungryActiveView extends StatelessWidget {
-   HungryActiveView({super.key});
-  final RxInt _navIndex = 0.obs;
+   HungryActiveView({super.key, HungryNowVM? hostVm})
+     : navVm = hostVm ?? _resolveHungryVm();
 
-  
-final navVm = Get.find<HungryNowVM>(tag: 'activate-nav');
+  final RxInt _navIndex = 0.obs;
+  final HungryNowVM navVm;
+
+  static HungryNowVM _resolveHungryVm() {
+    if (Get.isRegistered<HungryNowVM>()) {
+      return Get.find<HungryNowVM>();
+    }
+    return Get.put(
+      HungryNowVM(
+        HungryNowModel(
+          topIcon:         app_images.ic_hungry_logo,
+          settingsIcon:    app_images.ic_settings,
+          avatarIcon:      app_images.ic_tab_profile,
+          tabHungry:       app_images.ic_tab_hungry,
+          tabDiscover:     app_images.ic_tab_discover,
+          tabReservations: app_images.ic_tab_reservations,
+          tabChat:         app_images.ic_tab_chat,
+          tabProfile:      app_images.ic_tab_profile,
+          checkIcon:       app_images.ic_check,
+        ),
+      ),
+    );
+  }
 
 
   Widget _headerBar(BuildContext context, HungryActiveVM vm) {
@@ -45,8 +67,12 @@ final navVm = Get.find<HungryNowVM>(tag: 'activate-nav');
           Obx(() => MiniSwitch(
             value: vm.isOn.value,
             onChanged: (v){
-              navVm.toggleActiveNow();
               vm.toggleOn(v);
+              if (v) {
+                navVm.showHungryActive();
+              } else {
+                navVm.showLanding();
+              }
             },
             width: 38, height: 21.375,
             activeColor: AppColors.black,
@@ -167,7 +193,7 @@ final navVm = Get.find<HungryNowVM>(tag: 'activate-nav');
                 const AspectRatio(aspectRatio: 1),
                 Positioned.fill(
                   child: Image.asset(
-                    app_images.picture1, // ✅ from your app_images class
+                    app_images.picture1,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -178,7 +204,7 @@ final navVm = Get.find<HungryNowVM>(tag: 'activate-nav');
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.85),
+                      color: Colors.black.withValues(alpha: 0.85),
                       borderRadius: BorderRadius.circular(18),
                     ),
                     child: headingText('Dine', size: 12, color: Colors.white),
@@ -290,20 +316,8 @@ final navVm = Get.find<HungryNowVM>(tag: 'activate-nav');
 
         GestureDetector(
          // optional
-          child: SizedBox(
-            width: 36,
-            height: 36,
-            child: CircleAvatar(
-              radius: 18, // 36px diameter
-              backgroundColor: Colors.transparent,
-              child: SvgPicture.asset(
-                'assets/images/profile.svg',
-                width: 24,   // tweak if needed
-                height: 24,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
+          child:  CircleAvatar(radius: 18, backgroundImage: AssetImage(app_images.picture1), backgroundColor: Color(0xFFDDDDDD)),
+
         ),
 
         const SizedBox(width: 12),

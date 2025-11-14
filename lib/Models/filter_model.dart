@@ -22,7 +22,7 @@ class FilterData {
   const FilterData({
     this.gender = HgGender.any,
     this.minAge = 18,
-    this.maxAge = 75,
+    this.maxAge = 100,
     this.ageFrom = 18,
     this.ageTo = 75,
     this.bill = BillOption.any,

@@ -1,4 +1,6 @@
+import 'package:canada/Widgets/custom_button_widget.dart';
 import 'package:canada/Widgets/custom_text_input_widget.dart';
+import 'package:canada/Widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -10,7 +12,9 @@ import '../view_model/sign_up_view_model.dart';
 import 'login_view.dart';
 
 class SignUpView extends StatelessWidget {
-  const SignUpView({super.key});
+  SignUpView({super.key});
+
+  final _formKey = GlobalKey<FormState>();
 
   static const _font = 'Helvetica';
   static const _bold = 'Helvetica-Bold';
@@ -18,7 +22,7 @@ class SignUpView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vm = Get.put(SignUpViewModel(SignUpModel(
-      heroAsset:  app_images.app_images.signup_here,
+      heroAsset:  app_images.app_images.dit_logo,
       googleIcon: app_images.app_images.ic_google,
       appleIcon:  app_images.app_images.ic_apple,
       facebookIcon: app_images.app_images.ic_facebook,
@@ -36,46 +40,6 @@ class SignUpView extends StatelessWidget {
     }
 
 
-
-    // ✅ Decoration used for all three fields (email/password/confirm)
-    //    Supports suffix icons and the custom error outline + hidden caption.
-    InputDecoration fieldBoxExact(String hint, {Widget? suffix}) {
-      return InputDecoration(
-        hintText: hint,
-        hintStyle: const TextStyle(
-          fontFamily: _font,
-          fontSize: 14,
-          color: AppColors.gray200,
-        ),
-        isDense: true,
-        contentPadding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
-        filled: true,
-        fillColor: const Color(0xFFE9E9EB), // exact grey fill
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide.none,
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
-          borderSide: const BorderSide(color: Color(0xFFD32F2F), width: 1),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
-          borderSide: const BorderSide(color: Color(0xFFD32F2F), width: 1),
-        ),
-        errorStyle: const TextStyle(fontSize: 0, height: 0), // hide default caption
-        suffixIcon: suffix == null ? null : Padding(
-          padding: const EdgeInsets.only(right: 8),
-          child: suffix,
-        ),
-        suffixIconConstraints: const BoxConstraints(minWidth: 40, minHeight: 40),
-        constraints: const BoxConstraints(minHeight: 44, maxHeight: 44),
-      );
-    }
 
     Widget title(String t) => Text(
       t,
@@ -133,259 +97,229 @@ class SignUpView extends StatelessWidget {
       ),
     );
 
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter, end: Alignment.bottomCenter,
-          colors: [Color(0xFFF7F7F7), AppColors.white],
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SafeArea(
-          bottom: false,
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Column(
-              children: [
-                const SizedBox(height: 6),
-                Image.asset(vm.model.heroAsset, height: 240, fit: BoxFit.contain),
-                title('Sign Up'),
-                const SizedBox(height: 18),
+    return Scaffold(
+      backgroundColor: AppColors.bgWhite,
+      body: SafeArea(
+        bottom: false,
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          child: Column(
+            children: [
+              const SpacerWidget(height: 10),
+              Image.asset(vm.model.heroAsset, height: 95, fit: BoxFit.contain),
+              const SpacerWidget(height:8),
+              title('Sign Up'),
+              const SpacerWidget(height: 10),
 
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.symmetric(vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: const [
+                    BoxShadow(color: Color(0x1A000000), blurRadius: 27, 
+                    spreadRadius: 8, offset: Offset(0, 10)),
+                  ],
+                ),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Email
+                        formLabel('Email Address'),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomTextInputWidget(
+                                controller: vm.emailCtrl,
+                                validator: (v) => vm.validateEmail(v),
+                                hintText: 'example@gmail.com',
+                                // rounded, NO visible border (matches screenshot)
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide.none,
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide.none,
+                                ),
+                                errorBorder: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide.none,
+                                ),
+                                focusedErrorBorder: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              
+                            ],
+                          ),
+                        ),
+                        Obx(() => vm.emailError.value.isEmpty
+                                  ? const SizedBox.shrink()
+                                  : errorRow(vm.emailError.value)),
+                        const SpacerWidget(height: 2),
 
-                Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.symmetric(vertical: 4),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: const [
-                      BoxShadow(color: Color(0x1A000000), blurRadius: 22, offset: Offset(0, 10)),
-                    ],
-                  ),
-                    child: Form(
-                      key: vm.formKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // Email
-                          formLabel('Email Address'),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CustomTextInputWidget(
-                                  controller: vm.emailCtrl,
-                                  validator: (vv) {
-                                    if (vv == null || vv.isEmpty) return "Enter Required field";
-                                    return null;
-                                  },
-                                  hintText: 'example@gmail.com',
-                                  // rounded, NO visible border (matches screenshot)
-                                  border: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  focusedBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  errorBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  focusedErrorBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    borderSide: BorderSide.none,
+    
+                        // Password
+                        formLabel('Password'),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Obx(() => CustomTextInputWidget(
+                                controller: vm.passCtrl,
+                                validator: vm.validatePassword,
+                                obscureText: vm.obscurePass.value,
+                                hintText: '********',
+                                suffixIcon: IconButton(
+                                  padding: EdgeInsets.zero,
+                                  splashRadius: 18,
+                                  onPressed: vm.obscurePass.toggle,
+                                  icon: Icon(
+                                    vm.obscurePass.value ? Icons.visibility : Icons.visibility_off,
+                                    size: 20,
+                                    color: AppColors.greyshade3,
                                   ),
                                 ),
-                                Obx(() => vm.emailError.value.isEmpty
-                                    ? const SizedBox.shrink()
-                                    : errorRow(vm.emailError.value)),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-
-                          // Password
-                          formLabel('Password'),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Obx(() => CustomTextInputWidget(
-                                  controller: vm.passCtrl,
-                                  validator: vm.validatePassword,
-                                  obscureText: vm.obscurePass.value,
-                                  hintText: '********',
-                                  suffixIcon: IconButton(
-                                    padding: EdgeInsets.zero,
-                                    splashRadius: 18,
-                                    onPressed: vm.obscurePass.toggle,
-                                    icon: Icon(
-                                      vm.obscurePass.value ? Icons.visibility : Icons.visibility_off,
-                                      size: 20,
-                                      color: AppColors.greyshade3,
-                                    ),
-                                  ),
-                                  border: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  focusedBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  errorBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  focusedErrorBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                )),
-                                Obx(() => vm.passError.value.isEmpty
-                                    ? const SizedBox.shrink()
-                                    : errorRow(vm.passError.value)),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-
-                          // Confirm Password
-                          formLabel('Confirm Password'),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Obx(() => CustomTextInputWidget(
-                                  controller: vm.confirmCtrl,
-                                  validator: vm.validateConfirm,
-                                  obscureText: vm.obscureConfirm.value,
-                                  hintText: '********',
-                                  suffixIcon: IconButton(
-                                    padding: EdgeInsets.zero,
-                                    splashRadius: 18,
-                                    onPressed: vm.obscureConfirm.toggle,
-                                    icon: Icon(
-                                      vm.obscureConfirm.value ? Icons.visibility : Icons.visibility_off,
-                                      size: 20,
-                                      color: AppColors.greyshade3,
-                                    ),
-                                  ),
-                                  border: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  focusedBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  errorBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  focusedErrorBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                )),
-                                Obx(() => vm.confirmError.value.isEmpty
-                                    ? const SizedBox.shrink()
-                                    : errorRow(vm.confirmError.value)),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-
-
-                ),
-                const SizedBox(height: 14),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Already have an account? ',
-                      style: TextStyle(
-                        fontFamily: _font,
-                        fontSize: 12,
-                        color: AppColors.black,
-                      ),
-                    ),
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        Get.to(() => const LoginView(), transition: Transition.cupertino);
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-                        child: Text(
-                          'Sign in here',
-                          style: TextStyle(
-                            fontFamily: 'Helvetica-Bold',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 12,
-                            color: AppColors.black,
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide.none,
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide.none,
+                                ),
+                                errorBorder: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide.none,
+                                ),
+                                focusedErrorBorder: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide.none,
+                                ),
+                              )),
+                              Obx(() => vm.passError.value.isEmpty
+                                  ? const SizedBox.shrink()
+                                  : errorRow(vm.passError.value)),
+                            ],
                           ),
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    social(vm.model.googleIcon),
-                    const SizedBox(width: 18),
-                    social(vm.model.appleIcon),
-                    const SizedBox(width: 18),
-                    social(vm.model.facebookIcon),
-                  ],
-                ),
-
-                const SizedBox(height: 20),
-                SafeArea(
-                  top: false,
-                  minimum: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-                  child: SizedBox(
-                    height: 48,
-                    width: double.infinity,
-                    child: Obx(() => ElevatedButton(
-                      onPressed: vm.isLoading.value ? null : vm.submit,
-                      style: ButtonStyle(
-                        backgroundColor: const WidgetStatePropertyAll(AppColors.black),
-                        foregroundColor: const WidgetStatePropertyAll(Colors.white),
-                        elevation: const WidgetStatePropertyAll(0),
-                        shape: WidgetStatePropertyAll(
-                          RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                        const SpacerWidget(height: 2),
+    
+                        // Confirm Password
+                        formLabel('Confirm Password'),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Obx(() => CustomTextInputWidget(
+                                controller: vm.confirmCtrl,
+                                validator: vm.validateConfirm,
+                                obscureText: vm.obscureConfirm.value,
+                                hintText: '********',
+                                suffixIcon: IconButton(
+                                  padding: EdgeInsets.zero,
+                                  splashRadius: 18,
+                                  onPressed: vm.obscureConfirm.toggle,
+                                  icon: Icon(
+                                    vm.obscureConfirm.value ? Icons.visibility : Icons.visibility_off,
+                                    size: 20,
+                                    color: AppColors.greyshade3,
+                                  ),
+                                ),
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide.none,
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide.none,
+                                ),
+                                errorBorder: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide.none,
+                                ),
+                                focusedErrorBorder: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderSide: BorderSide.none,
+                                ),
+                              )),
+                              Obx(() => vm.confirmError.value.isEmpty
+                                  ? const SizedBox.shrink()
+                                  : errorRow(vm.confirmError.value)),
+                            ],
+                          ),
                         ),
-                      ),
-                      child: vm.isLoading.value
-                          ? const SizedBox(
-                        width: 20, height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                      )
-                          : const Text(
-                        'Sign up',
-                        style: TextStyle(fontFamily: _bold, fontWeight: FontWeight.w700, fontSize: 16),
-                      ),
-                    )),
+                      ],
+                    ),
+                  )
+    
+    
+              ),
+              const SpacerWidget(height: 3),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Already have an account? ',
+                    style: TextStyle(
+                      fontFamily: _font,
+                      fontSize: 12,
+                      color: AppColors.black,
+                    ),
                   ),
-                ),
-              ],
-            ),
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      Get.to(() => LoginView(), transition: Transition.cupertino);
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                      child: Text(
+                        'Sign in here',
+                        style: TextStyle(
+                          fontFamily: 'Helvetica-Bold',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 12,
+                          color: AppColors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+    
+              const SpacerWidget(height: 2),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  social(vm.model.googleIcon),
+                  const SizedBox(width: 18),
+                  social(vm.model.appleIcon),
+                  const SizedBox(width: 18),
+                  social(vm.model.facebookIcon),
+                ],
+              ),
+    
+              const SpacerWidget(height: 9),
+              SafeArea(
+                top: false,
+                minimum: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                child: CustomButton(text: "Sign up", onTap: vm.isLoading.value ? null : () => vm.submit(_formKey.currentState),)  
+                
+              ),
+            ],
           ),
         ),
       ),

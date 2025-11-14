@@ -1,5 +1,8 @@
+import 'package:canada/Constants/app_colors.dart';
+import 'package:canada/Constants/responsive.dart';
 import 'package:canada/Screens/settings_view.dart';
 import 'package:canada/Widgets/custom_text_widget.dart';
+import 'package:canada/Widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -62,59 +65,103 @@ class ProfileView extends GetView<ProfileVM> {
                 _Card(
                   child: Column(
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(48),
-                        child: Container(
-                          width: 96,
-                          height: 96,
-                          color: const Color(0xFFEDEDED),
-                          child: Image.asset(s.avatar, fit: BoxFit.cover),
-                        ),
-                      ),
+                     Stack(
+  alignment: Alignment.center,
+  children: [
+    // PROFILE IMAGE
+    ClipRRect(
+      borderRadius: BorderRadius.circular(48),
+      child: Container(
+        width: 96,
+        height: 96,
+        color: const Color(0xFFEDEDED),
+        child: Image.asset(
+          s.avatar,
+          fit: BoxFit.cover,
+        ),
+      ),
+    ),
+
+    // VERIFIED BADGE (positioned at bottom)
+    Positioned(
+      bottom: 0,
+      left: 20, // overlaps slightly like screenshot
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFF875F), // orange in screenshot
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.verified, // or your custom SVG icon
+              size: 14,
+              color: Colors.white,
+            ),
+            const SizedBox(width: 4),
+            const CustomTextWidget(
+             text:  "Verified",
+            
+                color: Colors.white,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              
+            ),
+          ],
+        ),
+      ),
+    ),
+  ],
+)
+,
                       const SizedBox(height: 10),
-                      Text(
-                        s.name,
-                        style: const TextStyle(
+                      CustomTextWidget(
+                      text:   s.name,
+                        
                           fontFamily:'Helvetica' ,
                           fontSize: 18,
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w800,
                           color: Colors.black,
-                        ),
+                        
                       ),
                       const SizedBox(height: 6),
-                      Text(
-                        s.bio,
+                      CustomTextWidget(
+                        text:  s.bio,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
+                      
                           color: Colors.black54,
-                          fontSize: 13,
+                          fontSize: 14,
                           height: 1.35,
-                          fontWeight: FontWeight.w600,
-                        ),
+                          fontWeight: FontWeight.w500,
+                        
                       ),
                       const SizedBox(height: 14),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _BlackButton(label: 'Edit Profile', onTap: controller.editProfile),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: _BlackButton(label: 'Status', onTap: () => _showStatusSheet(context)),
-                          ),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                        child: Row(
+                          spacing: 10,
+                          children: [
+                            Flexible(
+                              child: _BlackButton(label: 'Edit Profile', onTap: controller.editProfile),
+                            ),
+                            Flexible(
+                              child: _BlackButton(label: 'Status', onTap: () => _showStatusSheet(context)),
+                            ),
+                          ],
+                        ),
                       ),
 
                     ],
                   ),
                 ),
 
-                const SizedBox(height: 16),
+                const SpacerWidget(height: 9),
 
                 // Wishlist
                  _SectionHeader(title: 'My Wishlist', trailing: 'View Feed'),
 
-                const SizedBox(height: 8),
+                const SpacerWidget(height: 2),
                 Row(
                   children: [
                     Expanded(
@@ -133,7 +180,66 @@ class ProfileView extends GetView<ProfileVM> {
                   ],
                 ),
 
-                const SizedBox(height: 16),
+                const SpacerWidget(height: 9),
+                const _SectionHeader(title: 'People You Follow', trailing: 'View All'),
+                const SpacerWidget(height: 4),
+
+                SingleChildScrollView(
+  scrollDirection: Axis.horizontal,
+  child: Row(
+    spacing: 10,
+    children: List.generate(4, (i) {
+      return Container(
+        width: 130, 
+        padding: EdgeInsets.zero,
+        decoration: BoxDecoration(
+          color: AppColors.background,
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(15)),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.blackshade1.withValues(alpha: 0.03),
+              blurRadius: 10,
+              spreadRadius: 10,
+            ),
+          ],
+        ),
+        child: Column(
+         crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(15), 
+              topRight: Radius.circular(15)),
+              child: Image.asset(
+                app_images.dpIcon,
+                fit: BoxFit.contain,
+              ),
+            ),
+            CustomTextWidget(
+              text: "joshua_l",
+              color: AppColors.black,
+            ),
+            Container(
+              width: context.screenWidth,
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              color: AppColors.black_text.withValues(alpha: 0.9),
+              padding: EdgeInsets.symmetric(horizontal: 18, vertical: 5),
+              child: Center(
+                child: CustomTextWidget(
+                  text: "Following",
+                  fontSize: 12,
+                  color: AppColors.background,
+                ),
+              ),
+            ),
+            SpacerWidget(height: 1)
+          ],
+        ),
+      );
+    }),
+  ),
+),
+
+            SpacerWidget(height: 6),
 
                 // Instagram Preview
                 const _SectionHeader(title: 'Instagram Preview', trailing: 'View Post'),
@@ -160,7 +266,7 @@ class _Card extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 28),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -185,23 +291,17 @@ class _BlackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 50,
-      child: ElevatedButton(
-        onPressed: onTap,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.black,
-          foregroundColor: Colors.white,
-          elevation: 0,
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          textStyle: const TextStyle(
-            fontWeight: FontWeight.w900,
-            fontSize: 14,
-          ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: BoxDecoration(
+          color: AppColors.black
         ),
-        child: CustomTextWidget(text: label, 
-        color: Colors.white, fontWeight: FontWeight.w600,),
+        child: Center(
+          child: CustomTextWidget(text: label, 
+          color: Colors.white, fontWeight: FontWeight.w500,),
+        ),
       ),
     );
   }

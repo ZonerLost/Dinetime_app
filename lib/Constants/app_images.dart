@@ -96,6 +96,16 @@ class app_images {
   static const phoneIcon = "assets/images/phoneIcon.svg";
   static const timeIcon = "assets/images/timeicon.svg";
   static const visitWebIcon = "assets/images/visitweb.svg";
+  static const locationIcon = "assets/images/location.svg";
+  static const dpIcon = "assets/images/dp.png";
+  static const cutleryIcon = "assets/images/cutlery.svg";
+  static const checkCircleIcon = "assets/images/check_circle.svg";
+  static const locationPinIcon = "assets/images/location_pin_1.svg";
+  static const cahtsIcon = "assets/images/chats.svg";
+  static const splashBg = "assets/images/metallic_splash.png";
+  static const spalshLogo = "assets/images/logo_with_text.png";
+  static const profileImage = "assets/images/profile_image.svg";
+
 
 
 

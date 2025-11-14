@@ -1,6 +1,9 @@
 // lib/Screens/bio_view.dart
 import 'dart:ui' show ImageFilter;
+import 'package:canada/Constants/app_colors.dart';
 import 'package:canada/Constants/responsive.dart';
+import 'package:canada/Widgets/glass_widget.dart';
+import 'package:canada/Widgets/image_preview_dialog_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -32,9 +35,16 @@ class BioView extends GetView<BioVM> {
 
         final handleClose = onClose ?? Get.back;
 
-        return CustomScrollView(
-          physics: const BouncingScrollPhysics(), 
-          slivers: [
+        return NotificationListener<ScrollNotification>(
+          onNotification: (notification) {
+            if (_shouldCloseOnPullDown(notification)) {
+              handleClose();
+            }
+            return false;
+          },
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(), 
+            slivers: [
             // ---------------- HERO ----------------
             SliverToBoxAdapter(
               child: Stack(
@@ -43,34 +53,28 @@ class BioView extends GetView<BioVM> {
                   SizedBox(
                     height: heroH,
                     width: size.width,
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(16),
-                        bottomRight: Radius.circular(16),
-                      ),
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          Image.asset(
-                            p.heroPhoto,
-                            fit: BoxFit.cover,
-                            alignment: Alignment.topCenter,
-                          ),
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Container(
-                              height: heroH * 0.42,
-                              decoration: const BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
-                                  colors: [Color(0xE6000000), Color(0x00000000)],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Image.asset(
+                          p.heroPhoto,
+                          fit: BoxFit.cover,
+                          alignment: Alignment.topCenter,
+                        ),
+                        // Align(
+                        //   alignment: Alignment.bottomCenter,
+                        //   child: Container(
+                        //     height: heroH * 0.42,
+                        //     decoration: const BoxDecoration(
+                        //       gradient: LinearGradient(
+                        //         begin: Alignment.bottomCenter,
+                        //         end: Alignment.topCenter,
+                        //         colors: [Color(0xE6000000), Color(0x00000000)],
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+                      ],
                     ),
                   ),
                   Positioned(
@@ -84,20 +88,20 @@ class BioView extends GetView<BioVM> {
                   Positioned(
                     left: 16,
                     right: 16,
-                    bottom: 16,
+                    bottom: 30,
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
                           child: headingText('${p.name} ${p.age}', size: 22, color: Colors.white),
                         ),
                         const SizedBox(width: 8),
-                        GlassPill(
+                        GlassWidget(
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               SvgPicture.asset(
-                                app_images.show_distance,
+                                app_images.locationIcon,
                                 width: 16,
                                 height: 16,
                                 colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
@@ -165,15 +169,40 @@ class BioView extends GetView<BioVM> {
               ),
 
             // ------------- Moments (grid) -------------
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                child: _DarkSection(
-                  title: 'Moments',
-                  child: _PhotoGrid(asset: app_images.moments),
-                ),
-              ),
-            ),
+         SliverToBoxAdapter(
+  child: Padding(
+    padding: const EdgeInsets.symmetric(horizontal:  16, vertical:  12, ),
+    child: _DarkSection(
+      title: 'Moments',
+      child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(), // ← Important (so scroll stays with parent)
+        padding: EdgeInsets.zero,
+        shrinkWrap: true,      
+        itemCount: 9,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,          // 2 items per row
+          crossAxisSpacing: 5,
+          mainAxisSpacing: 5,
+          childAspectRatio: 12/9,        // Makes it square (feel free to adjust)
+        ),
+        itemBuilder: (_, i) {
+          return HeroImageViewer(
+    image: app_images.moments,
+    tag: "insta_$i",  // unique for each image
+  );
+          // return ClipRRect(
+          //   borderRadius: BorderRadius.circular(2),
+          //   child: Image.asset(
+          //     app_images.moments,
+          //     fit: BoxFit.cover,
+          //   ),
+          // );
+        },
+      ),
+    ),
+  ),
+),
+
 
             // ------------- Latest From The Instagram (grid) -------------
             SliverToBoxAdapter(
@@ -181,14 +210,77 @@ class BioView extends GetView<BioVM> {
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
                 child: _DarkSection(
                   title: 'Latest From The Instagram',
-                  child: _PhotoGrid(asset: app_images.moments),
+                  child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(), // ← Important (so scroll stays with parent)
+        padding: EdgeInsets.zero,
+        shrinkWrap: true,      
+        itemCount: 6,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,          // 2 items per row
+          crossAxisSpacing: 5,
+          mainAxisSpacing: 5,
+          childAspectRatio: 12/9,        // Makes it square (feel free to adjust)
+        ),
+        itemBuilder: (_, i) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(2),
+            child: Image.asset(
+              app_images.moments,
+              fit: BoxFit.cover,
+            ),
+          );
+        },
+      ),
                 ),
               ),
             ),
+
+            // SliverToBoxAdapter(
+            //   child:Padding(
+            //     padding: const EdgeInsets.fromLTRB(16, 12, 16, 24), 
+            //     child: _DarkSection(title: "People You Follow", 
+            //     child: Column(
+            //       spacing: 10,
+            //       children: List.generate(4, (i) => Row(
+            //         spacing: 10,
+            //         children: [
+            //           ClipRRect(borderRadius: BorderRadius.circular(1300),child: Image.asset(app_images.dpIcon, height: 45, ),), 
+            //           CustomTextWidget(text: "joshua_l", color: AppColors.background,), 
+            //           Container(
+            //             color: AppColors.gray500.withValues(alpha: 0.3),
+            //             padding: EdgeInsets.symmetric(horizontal: 18, vertical: 5),
+            //             child: CustomTextWidget(text: "Following", color: AppColors.background,),
+            //           )
+            //         ],
+            //       )),
+            //     ))
+            //   ) ,
+            // )
           ],
+          ),
         );
       }),
     );
+  }
+
+  bool _shouldCloseOnPullDown(ScrollNotification notification) {
+    if (notification.metrics.axis != Axis.vertical) return false;
+
+    // When the user is at the top of the sheet and drags downward, close.
+    if (notification is ScrollUpdateNotification) {
+      final delta = notification.scrollDelta ?? 0;
+      final atTop = notification.metrics.pixels <=
+          notification.metrics.minScrollExtent + 0.5;
+      if (notification.dragDetails != null && delta < -8 && atTop) {
+        return true;
+      }
+    } else if (notification is OverscrollNotification) {
+      if (notification.overscroll < 0 &&
+          notification.metrics.pixels <= notification.metrics.minScrollExtent + 0.5) {
+        return true;
+      }
+    }
+    return false;
   }
 }
 
@@ -252,9 +344,9 @@ class GlassCard extends StatelessWidget {
         child: Container(
           padding: padding,
           decoration: BoxDecoration(
-            color: const Color(0x4D1E1E1E),
+            color: const Color.fromARGB(77, 119, 119, 119),
             borderRadius: BorderRadius.circular(borderRadius),
-            border: Border.all(color: Colors.white.withOpacity(.08)),
+            border: Border.all(color: Colors.white.withValues(alpha:  .08)),
           ),
           child: child,
         ),
@@ -263,31 +355,7 @@ class GlassCard extends StatelessWidget {
   }
 }
 
-class GlassPill extends StatelessWidget {
-  const GlassPill({required this.child, super.key});
-  final Widget child;
 
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: const BoxDecoration(
-            color: Color(0x80000000), // 50% black
-            shape: BoxShape.circle,
-            boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 6, offset: Offset(0, 2))],
-          ),
-          child: child,
-        ),
-      ),
-    );
-  }
-}
-
-/// Dark rounded section container with a title
 class _DarkSection extends StatelessWidget {
   const _DarkSection({required this.title, required this.child});
   final String title;
@@ -297,15 +365,19 @@ class _DarkSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0x1FFFFFFF), // subtle dark card
+        color: const Color(0x1FFFFFFF), 
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.06)),
+        border: Border.all(color: Colors.white.withValues(alpha:  0.06)),
       ),
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+      padding: const EdgeInsets.symmetric(horizontal:  4, vertical:  6, ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          headingText(title, size: 16, color: Colors.white),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+            child: CustomTextWidget(text:  title, fontSize: 20, 
+            fontWeight: FontWeight.w800, color: Colors.white),
+          ),
           const SizedBox(height: 10),
           child,
         ],
@@ -314,56 +386,53 @@ class _DarkSection extends StatelessWidget {
   }
 }
 
-/// 2×2 grid with target tile size ~171x99 (keeps page scrollable)
-class _PhotoGrid extends StatelessWidget {
-  const _PhotoGrid({required this.asset});
-  final String asset;
+// /// 2×2 grid with target tile size ~171x99 (keeps page scrollable)
+// class _PhotoGrid extends StatelessWidget {
+//   const _PhotoGrid({required this.asset});
+//   final String asset;
 
-  static const double _targetW = 171; // px
-  static const double _targetH = 99;  // px
-  static const double _spacing  = 8;  // grid spacing
+//   static const double _targetW = 171; // px
+//   static const double _targetH = 99;  // px
+//   static const double _spacing  = 8;  // grid spacing
 
-  @override
-  Widget build(BuildContext context) {
-    const crossAxisCount = 2;
-    const aspect = _targetW / _targetH; // ≈1.727
+//   @override
+//   Widget build(BuildContext context) {
+//     const crossAxisCount = 2;
+//     const aspect = _targetW / _targetH; // ≈1.727
 
-    return LayoutBuilder(
-      builder: (context, c) {
-        // actual tile width given the section width + spacing
-        final totalSpacing = _spacing * (crossAxisCount - 1);
-        final tileW = (c.maxWidth - totalSpacing) / crossAxisCount;
-        // match target ratio => compute height to ~99px when width ~171px
-        final tileH = tileW / aspect;
+//     return LayoutBuilder(
+//       builder: (context, c) {
+//         // actual tile width given the section width + spacing
+//         final totalSpacing = _spacing * (crossAxisCount - 1);
+//         final tileW = (c.maxWidth - totalSpacing) / crossAxisCount;
+//         // match target ratio => compute height to ~99px when width ~171px
+//         final tileH = tileW / aspect;
 
-        // total grid height for 2 rows
-        final gridH = tileH * 2 + _spacing;
+//         // total grid height for 2 rows
+//         final gridH = tileH * 2 + _spacing;
 
-        return SizedBox(
-          height: gridH,
-          child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: 4,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              mainAxisSpacing: _spacing,
-              crossAxisSpacing: _spacing,
-              childAspectRatio: aspect,
-            ),
-            itemBuilder: (_, __) => ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
-                asset,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
+//         return SizedBox(
+//           height: gridH,
+//           child: GridView.builder(
+//             physics: const NeverScrollableScrollPhysics(),
+//             shrinkWrap: true,
+//             itemCount: 4,
+//             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+//               crossAxisCount: crossAxisCount,
+//               mainAxisSpacing: _spacing,
+//               crossAxisSpacing: _spacing,
+//               childAspectRatio: aspect,
+//             ),
+//             itemBuilder: (_, __) => ClipRRect(
+//               borderRadius: BorderRadius.circular(8),
+//               child: 
+//             ),
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
 
 /// Round cuisine chip using your cuisine PNGs + white label
 class CuisineChip extends StatelessWidget {

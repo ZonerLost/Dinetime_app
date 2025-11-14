@@ -59,14 +59,16 @@ class FoodInterestView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Title
-              const Text(
-                'What Food Do You Love?',
-                style: TextStyle(
-                  fontFamily: kFontBold,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 26,
-                  height: 1.1,
-                  color: AppColors.black,
+              Center(
+                child: const Text(
+                  'What Food Do You Love?',
+                  style: TextStyle(
+                    fontFamily: kFontBold,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 26,
+                    height: 1.1,
+                    color: AppColors.black,
+                  ),
                 ),
               ),
               const SizedBox(height: 25),

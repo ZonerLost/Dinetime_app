@@ -12,8 +12,7 @@ class CustomTextInputWidget extends StatelessWidget {
   // Icons
   final Widget? prefixIcon;
   final Widget? suffixIcon;
-
-  // Borders
+  // Borders  
   final OutlineInputBorder border;                // required
   final OutlineInputBorder? focusedBorder;        // optional
   final OutlineInputBorder? errorBorder;          // optional
@@ -45,7 +44,6 @@ class CustomTextInputWidget extends StatelessWidget {
     // Icons
     this.prefixIcon,
     this.suffixIcon,
-
     // Borders
     this.focusedBorder,
     this.errorBorder,
@@ -85,9 +83,10 @@ class CustomTextInputWidget extends StatelessWidget {
         onTapOutside: (event) => FocusScope.of(context).unfocus(),
         style: textStyle,
         readOnly: isReadOnly ?? false,
+
         decoration: InputDecoration(
-          isDense: true,
-          contentPadding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
+          
+          contentPadding: const EdgeInsets.symmetric(horizontal:  16, vertical: 14, ),
           filled: true,
           fillColor: fillColor ?? const Color(0xFFE9E9EB),
 
@@ -106,7 +105,7 @@ class CustomTextInputWidget extends StatelessWidget {
 
           // hide default error caption (you show custom row below)
           errorStyle: const TextStyle(fontSize: 0, height: 0),
-          constraints: const BoxConstraints(minHeight: 44, maxHeight: 44),
+          // constraints: const BoxConstraints(minHeight: 44, maxHeight: 44),
         ),
       ),
     );

@@ -1,3 +1,6 @@
+import 'package:canada/Constants/responsive.dart';
+import 'package:canada/Widgets/custom_text_widget.dart';
+import 'package:canada/Widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -5,11 +8,11 @@ import 'package:get/get.dart';
 import '../Constants/app_colors.dart';
 import '../Constants/app_images.dart';
 import '../Models/hungry_now_model.dart';
-import '../Widgets/dt_bottom_nav.dart';
 import '../Widgets/mini_switch.dart';
 import '../view_model/hungry_active_view_model.dart';
 import '../view_model/hungry_now_view_model.dart';
 import 'activate_now_view.dart';
+import 'hungry_active_view.dart';
 
 class HungryNowView extends StatelessWidget {
   HungryNowView({super.key});
@@ -22,7 +25,7 @@ class HungryNowView extends StatelessWidget {
   final HungryNowVM vm = Get.put(
     HungryNowVM(
       HungryNowModel(
-        topIcon:         app_images.ic_hungry_logo,
+        topIcon:         app_images.cutleryIcon,
         settingsIcon:    app_images.ic_settings,
         avatarIcon:      app_images.ic_tab_profile,
         tabHungry:       app_images.ic_tab_hungry,
@@ -30,7 +33,9 @@ class HungryNowView extends StatelessWidget {
         tabReservations: app_images.ic_tab_reservations,
         tabChat:         app_images.ic_tab_chat,
         tabProfile:      app_images.ic_tab_profile,
-        checkIcon:       app_images.ic_check,
+        checkIcon:       app_images.checkCircleIcon,
+        chatIcon:         app_images.cahtsIcon, 
+        locationIcon:     app_images.locationPinIcon
       ),
     ),
     permanent: true,
@@ -50,13 +55,12 @@ class HungryNowView extends StatelessWidget {
     return Image.asset(path, width: w, height: h, fit: BoxFit.cover, color: color);
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildLanding(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
-    final double horizontalPad   = w >= 1200 ? 32 : w >= 840 ? 24 : 16;
-    final double contentMaxWidth = w >= 1200 ? 520 : w >= 840 ? 480 : 400;
+    final double horizontalPad   = w >= 1200 ? 32 : w >= 840 ? 24 : 30;
+    // final double contentMaxWidth = w >= 1200 ? 520 : w >= 840 ? 480 : 400;
 
-    return Obx( () => vm.isOn.value ? ActivateNowView()  : Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
       appBar: _TopBar(
         settingsIcon: vm.model.settingsIcon,
@@ -64,76 +68,86 @@ class HungryNowView extends StatelessWidget {
         onSettings:   vm.goSettings,
         onProfile:    vm.goProfile,
       ),
-
-      // let the nav bar render under the bottom inset (no gap)
       extendBody: true,
       resizeToAvoidBottomInset: false,
-
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(horizontalPad, 8, horizontalPad, 24),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: contentMaxWidth),
-              child: Column(
+          padding: EdgeInsets.symmetric(horizontal:  horizontalPad, vertical:  24),
+          child: Column(
+            children: [
+              const SpacerWidget(height: 3),
+              Container(
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle, 
+                  border: Border.all(color: AppColors.black_text.withValues(alpha: 0.17))
+                ),
+             child:  HungryNowView._asset(vm.model.topIcon, w: 60, h: 60)
+                
+              ),                
+              const SpacerWidget(height: 6),
+              const CustomTextWidget(
+                text:  'Hungry Now',
+                textAlign: TextAlign.center,
+                
+                  fontFamily: _bold,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 26,
+                  color: AppColors.black,
+                
+              ),
+              const SpacerWidget(height: 1),
+              const CustomTextWidget(
+               text:  'Meet people ready to dine right now',
+                textAlign: TextAlign.center,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: _font,
+                  fontSize: 14,
+                  color: AppColors.text,
+                
+              ),
+              const SpacerWidget(height: 8),
+              _ToggleRow(vm: vm),
+              const SpacerWidget(height: 3),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 76),
-                  _Emblem(iconPath: vm.model.topIcon),
-                  const SizedBox(height: 16),
-
-                  const Text(
-                    'Hungry Now',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: _bold,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 26,
-                      color: AppColors.black,
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Activate hungry now to connect with people in your\narea who are ready to dine right now',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: _font,
-                      fontSize: 13,
-                      color: AppColors.text,
-                    ),
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  _ToggleRow(vm: vm),
-
-                  const SizedBox(height: 36),
-
-                  Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 340),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _BulletRow(iconPath: vm.model.checkIcon, text: 'Instant Matches With Active Users'),
-                          _BulletRow(iconPath: vm.model.checkIcon, text: "See Who’s Hungry Nearby"),
-                          _BulletRow(iconPath: vm.model.checkIcon, text: 'Chat And Meet Up Instantly'),
-                        ],
-                      ),
-                    ),
-                  ),
+                  _BulletRow(iconPath: vm.model.checkIcon, text: 'Instant Matches With Active Users'),
+                  _BulletRow(iconPath: vm.model.locationIcon!, text: "See Who’s Hungry Nearby"),
+                  _BulletRow(iconPath: vm.model.chatIcon!, text: 'Chat And Meet Up Instantly'),
                 ],
               ),
-            ),
+              SpacerWidget(height: 3), 
+              const CustomTextWidget(
+               text:  'When you turn thison, your profile becomes visible to people who also want to dine now.',
+                textAlign: TextAlign.center,
+               
+                  fontFamily: _font,
+                  fontSize: 14,
+                  color: AppColors.text,
+                
+              ),
+            ],
           ),
         ),
       ),
-
-      // keep the glossy nav bar absolutely flush
-    )
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      switch (vm.subPage.value) {
+        case HungrySubPage.landing:
+          return _buildLanding(context);
+        case HungrySubPage.activateNow:
+          return ActivateNowView(hostVm: vm);
+        case HungrySubPage.hungryActive:
+          return HungryActiveView(hostVm: vm);
+      }
+    });
   }
 }
 
@@ -161,7 +175,7 @@ class _TopBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.white,
       elevation: 0,
       centerTitle: true,
-      title: const SizedBox.shrink(),
+      // title: const SizedBox.shrink(),
       actions: [
         IconButton(
           onPressed: onSettings,
@@ -173,9 +187,9 @@ class _TopBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.only(right: 12),
           child: GestureDetector(
             onTap: onProfile,
-            child: ClipOval(
-              child: HungryNowView._asset(avatarIcon, w: 24, h: 24, color: AppColors.black),
-            ),
+            child: CircleAvatar(radius: 18, 
+            backgroundImage: AssetImage(app_images.picture1), backgroundColor: Color(0xFFDDDDDD)),
+
           ),
         ),
       ],
@@ -183,72 +197,64 @@ class _TopBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-class _Emblem extends StatelessWidget {
-  final String iconPath;
-  const _Emblem({required this.iconPath});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 90,
-      height: 90,
-      child: Center(child: HungryNowView._asset(iconPath, w: 97, h: 97)),
-    );
-  }
-}
 
 class _ToggleRow extends StatelessWidget {
   final HungryNowVM vm;
   const _ToggleRow({required this.vm});
 
 
-  static const _font = HungryNowView._font;
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          'Off',
-          style: TextStyle(
-            fontFamily: _font,
-            fontSize: 12,
-            color: vm.isOn.value ? AppColors.greyshade1 : AppColors.black,
+    return Obx(() => Container(
+      width: context.screenWidth,
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      // margin: EdgeInsets.symmetric(horizontal: 19),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(13),
+        border: Border.all(color: AppColors.blackshade1.withValues(alpha: 0.2))
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+            Expanded(child: Column(
+              spacing: 5,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+              CustomTextWidget(text: "Hungry Now Mode", fontWeight: FontWeight.bold,
+             fontSize: 16,
+              ),
+              CustomTextWidget(text: "Turn on to go live", fontWeight: FontWeight.normal,
+             fontSize: 14,
+              )
+            ],)),
+          
+          const SizedBox(width: 8),
+          MiniSwitch(
+            value: vm.isOn.value,
+            onChanged: (v) {
+              vm.toggle(v);
+              if (v && !Get.isRegistered<HungryActiveVM>()) {
+                Get.put(createHungryActiveVm());
+              }
+              // if (v) {
+              //   Get.to(
+              //         () => ActivateNowView(),
+              //     transition: Transition.cupertino,
+              //     duration: const Duration(milliseconds: 220),
+              //   );
+              // }
+            },
+            width: 48,
+            height: 28,
+            activeColor: AppColors.black,
+            inactiveColor: const Color(0xFFE0E0E0),
+            semanticsLabel: 'Hungry Now toggle',
           ),
-        ),
-        const SizedBox(width: 8),
-        MiniSwitch(
-          value: vm.isOn.value,
-          onChanged: (v) {
-            vm.isOn.value = v;
-            if (v && !Get.isRegistered<HungryActiveVM>()) {
-              Get.put(createHungryActiveVm());
-            }
-            // if (v) {
-            //   Get.to(
-            //         () => ActivateNowView(),
-            //     transition: Transition.cupertino,
-            //     duration: const Duration(milliseconds: 220),
-            //   );
-            // }
-          },
-          width: 48,
-          height: 28,
-          activeColor: AppColors.black,
-          inactiveColor: const Color(0xFFE0E0E0),
-          semanticsLabel: 'Hungry Now toggle',
-        ),
-        const SizedBox(width: 8),
-        Text(
-          'On',
-          style: TextStyle(
-            fontFamily: _font,
-            fontSize: 12,
-            color: vm.isOn.value ? AppColors.black : AppColors.greyshade1,
-          ),
-        ),
-      ],
+          const SizedBox(width: 8),
+          
+        ],
+      ),
     ));
   }
 }
@@ -266,21 +272,26 @@ class _BulletRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         children: [
-          HungryNowView._asset(iconPath, w: 16, h: 16, color: AppColors.black),
+          Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle, 
+              border: Border.all(color: AppColors.black.withValues(alpha: 0.1))
+            ),
+            child: HungryNowView._asset(iconPath, w: 15, h: 15, 
+            color: AppColors.black)),
           const SizedBox(width: 12),
           Flexible(
-            child: Text(
-              text,
+            child: CustomTextWidget(
+              text:  text,
               textAlign: TextAlign.start,
-              style: const TextStyle(
                 fontFamily: _bold,
-                fontWeight: FontWeight.w700,
-                fontSize: 14,
-                height: 1.35,
+                fontWeight: FontWeight.w500,
+                fontSize: 13,
                 color: AppColors.black,
-              ),
+              
             ),
           ),
         ],

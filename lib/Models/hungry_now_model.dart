@@ -10,6 +10,8 @@ class HungryNowModel {
   final String tabProfile;
 
   final String checkIcon;
+  final String? locationIcon;
+  final String? chatIcon;
 
   const HungryNowModel({
     required this.topIcon,
@@ -21,5 +23,7 @@ class HungryNowModel {
     required this.tabChat,
     required this.tabProfile,
     required this.checkIcon,
+     this.chatIcon, 
+     this.locationIcon
   });
 }

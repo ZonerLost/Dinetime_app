@@ -40,9 +40,9 @@ class DetailsHotandtrendSheetWidget extends StatelessWidget {
         child: SafeArea(
           top: false,
           child: Column(
-            
             children: [
-              const Divider(endIndent: 150, indent: 150, thickness: 4, color: AppColors.background,),
+              const Divider(endIndent: 150, indent: 150, 
+              thickness: 4, color: AppColors.background,),
               Align(alignment: Alignment.topRight,
               child: IconButton(onPressed: (){
                 Get.back();
@@ -60,6 +60,15 @@ class DetailsHotandtrendSheetWidget extends StatelessWidget {
                   _InfoSection(model: details),
                   const SizedBox(height: 24),
                 ],
+                Row(
+                  spacing: 10,
+                  children: [
+                    SvgPicture.asset("assets/images/visitweb.svg"),
+                    CustomTextWidget(text: "Vist website", fontSize: 16, color: AppColors.orangeColor,),
+                  ],
+                ),
+        const SizedBox(height: 16),
+
                 _TabSelector(viewModel: viewModel),
                 const SizedBox(height: 18),
                 Obx(() {
@@ -262,7 +271,7 @@ class _MenuList extends StatelessWidget {
             headingText(
               listMenuModel[i].title,
               size: 15,
-              color: Colors.deepOrange,
+              color: AppColors.orangeColor,
             ),
             const SizedBox(height: 10),
             ...listMenuModel[i].menuItemDetails.map((item) {
@@ -314,7 +323,7 @@ class _MenuItemTile extends StatelessWidget {
           bodyText(
             '\$${item.price.toStringAsFixed(2)}',
             size: 12,
-            color: Colors.deepOrange,
+            color: AppColors.orangeColor,
             weight: FontWeight.w600,
           ),
         ],

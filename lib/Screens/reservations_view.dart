@@ -1,3 +1,4 @@
+import 'package:canada/Widgets/custom_text_input_widget.dart';
 import 'package:canada/Widgets/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -25,9 +26,9 @@ class ReservationsView extends GetView<ReservationsVM> {
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         titleSpacing: 0,
-        title: const Text(
-          'Reservations',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+        title: const CustomTextWidget(
+         text:  'Reservations',
+         fontSize: 20, fontWeight: FontWeight.w800,
         ),
         leading: Navigator.of(context).canPop()
             ? IconButton(
@@ -60,7 +61,23 @@ class ReservationsView extends GetView<ReservationsVM> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const _SearchField(),
+             CustomTextInputWidget(controller: TextEditingController(), 
+             hintStyle:
+        const TextStyle(color: Colors.black38, fontWeight: FontWeight.w400),
+             hintText: 'Search restaurants, events…', 
+             prefixIcon: Padding(
+          padding: const EdgeInsets.all(12),
+          child: SvgPicture.asset(
+            app_images.ic_tab_discover,
+            width: 18,
+            height: 18,
+            colorFilter:
+            const ColorFilter.mode(Colors.black54, BlendMode.srcIn),
+          ),
+        ),
+             border: OutlineInputBorder( 
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide.none),),
             const SizedBox(height: 16),
 
             const _SectionTitle('Upcoming Reservations'),
@@ -113,38 +130,38 @@ class ReservationsView extends GetView<ReservationsVM> {
 
 /// ---------- UI bits tuned to the mock ----------
 
-class _SearchField extends StatelessWidget {
-  const _SearchField();
+// class  extends StatelessWidget {
+//   const _SearchField();
 
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      onChanged: (t) => Get.find<ReservationsVM>().query.value = t,
-      decoration: InputDecoration(
-        hintText: 'Search restaurants, events…',
-        hintStyle:
-        const TextStyle(color: Colors.black38, fontWeight: FontWeight.w400),
-        filled: true,
-        fillColor: Colors.black.withValues(alpha: 0.05),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 15),
-        border: OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        prefixIcon: Padding(
-          padding: const EdgeInsets.all(12),
-          child: SvgPicture.asset(
-            app_images.ic_tab_discover,
-            width: 18,
-            height: 18,
-            colorFilter:
-            const ColorFilter.mode(Colors.black54, BlendMode.srcIn),
-          ),
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return TextField(
+      
+//       decoration: InputDecoration(
+//         hintText: 'Search restaurants, events…',
+//         hintStyle:
+//         const TextStyle(color: Colors.black38, fontWeight: FontWeight.w400),
+//         filled: true,
+//         fillColor: Colors.black.withValues(alpha: 0.05),
+//         contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 15),
+//         border: OutlineInputBorder(
+//           borderSide: BorderSide.none,
+//           borderRadius: BorderRadius.circular(10),
+//         ),
+//         prefixIcon: Padding(
+//           padding: const EdgeInsets.all(12),
+//           child: SvgPicture.asset(
+//             app_images.ic_tab_discover,
+//             width: 18,
+//             height: 18,
+//             colorFilter:
+//             const ColorFilter.mode(Colors.black54, BlendMode.srcIn),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class _SectionTitle extends StatelessWidget {
   const _SectionTitle(this.title);
@@ -431,8 +448,8 @@ class _QuickActionTile extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
-       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-        margin: const EdgeInsets.symmetric(horizontal: 6),
+       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 20),
+        margin: const EdgeInsets.symmetric(horizontal: 2),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(2),

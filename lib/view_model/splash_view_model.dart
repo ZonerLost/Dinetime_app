@@ -11,7 +11,7 @@ class SplashViewModel extends GetxController {
   void onReady() {
     super.onReady();
     Future.delayed(_model.delay, () {
-      Get.offAllNamed(AppRoutes.signUp);
+      Get.offAllNamed(AppRoutes.login);
     });
   }
 }

@@ -1,3 +1,7 @@
+import 'dart:ui';
+
+import 'package:canada/Constants/app_colors.dart';
+import 'package:canada/Widgets/custom_text_input_widget.dart';
 import 'package:canada/Widgets/details_hotandtrend_sheet_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -31,18 +35,7 @@ class HotTrendingView extends GetView<HotTrendingVM> {
 
 
           // gradients
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              height: 160,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                  colors: [Color(0xCC000000), Color(0x00000000)],
-                ),
-              ),
-            ),
-          ),
+         
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -101,7 +94,32 @@ class HotTrendingView extends GetView<HotTrendingVM> {
               gap: 6,
             ),
           ),
-
+         
+Positioned(
+  left: 12,
+  right: 12,
+  top: 130 + safeBottom,
+  child: ClipRRect(
+    borderRadius: BorderRadius.circular(16),
+    child: BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15), 
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.03), 
+          borderRadius: BorderRadius.circular(16),
+          
+        ),
+        child: CustomTextInputWidget(
+          fillColor: Colors.transparent, 
+          suffixIcon: const Icon(Icons.search, color: Colors.white70),
+          hintText: 'Search',
+          controller: TextEditingController(),
+          border: OutlineInputBorder(borderSide: BorderSide.none), 
+        ),
+      ),
+    ),
+  ),
+),
         ],
       );
     });
@@ -238,7 +256,7 @@ class _SegmentBarRow extends StatelessWidget {
     required this.segments,
     required this.activeIndex,
     this.gap = 6,
-  });
+  }); 
 
   final int segments;      // e.g., controller.posts.length
   final int activeIndex;   // e.g., controller.currentIndex.value

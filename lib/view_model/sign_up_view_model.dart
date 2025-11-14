@@ -7,9 +7,6 @@ class SignUpViewModel extends GetxController {
   final SignUpModel model;
   SignUpViewModel(this.model);
 
-  // Form
-  final formKey = GlobalKey<FormState>();
-
   // Controllers
   late final TextEditingController emailCtrl;
   late final TextEditingController passCtrl;
@@ -49,11 +46,11 @@ class SignUpViewModel extends GetxController {
   }
 
   // ---------------- Actions ---------------------------------------------------
-  Future<void> submit() async {
+  Future<void> submit(FormState? form) async {
     FocusManager.instance.primaryFocus?.unfocus();
 
     // Force validation so borders + error rows update together
-    final ok = formKey.currentState?.validate() ?? false;
+    final ok = form?.validate() ?? false;
     if (!ok) return;
 
     isLoading.value = true;
