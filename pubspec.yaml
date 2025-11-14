@@ -108,4 +108,5 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/logo_without_text.png"
+  remove_alpha_ios: true
+  image_path: "assets/images/logoappicon.png"

@@ -121,7 +121,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.text,
+                    color: AppColors.background,
                     fontFamily: 'Helvetica',
                   ),
                 ),
