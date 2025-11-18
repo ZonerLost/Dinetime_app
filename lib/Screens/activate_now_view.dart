@@ -17,7 +17,7 @@ class ActivateNowView extends StatelessWidget {
      : hostVm = hostVm ?? _resolveHungryVm();
 
 
-   double kTopStripTop   = 8;
+   double kTopStripTop   = 18;
    double kHeadingTop    = 7;
    double kSubTop        = 10;
    double kCardTop       = 22;
@@ -95,7 +95,8 @@ class ActivateNowView extends StatelessWidget {
             shape: BoxShape.circle, 
             border: Border.all(color: AppColors.black_text.withValues(alpha: 0.8))
           ),
-          child: Center(child: const Icon(Icons.favorite_border, size: 25, color: AppColors.black)));
+          child: Center(child: const Icon(Icons.favorite_border, 
+          size: 25, color: AppColors.black)));
       case ActivateNowIcon.pin:
         return Container(
           padding: EdgeInsets.symmetric(horizontal:  6, vertical: 5),
@@ -177,7 +178,7 @@ class ActivateNowView extends StatelessWidget {
               // title + subheading
               CustomTextWidget(
                text:  vm.model.heading,
-                fontSize: 22,
+                fontSize: 32,
                 fontWeight: FontWeight.bold,
                 color: AppColors.black,
                 textAlign: TextAlign.center,
@@ -185,7 +186,7 @@ class ActivateNowView extends StatelessWidget {
                SpacerWidget(height: 2),
               CustomTextWidget(
                text:  vm.model.subheading,
-                fontSize: 14,
+                fontSize: 18,
                 color: AppColors.text,
                 
                 textAlign: TextAlign.center,
@@ -222,7 +223,8 @@ class ActivateNowView extends StatelessWidget {
                     elevation: 0,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
                   ),
-                  child: headingText('Activate Now', size: 16, color: Colors.white),
+                  child: headingText('Activate Now', 
+                  size: 16, color: Colors.white),
                 ),
               ),
               

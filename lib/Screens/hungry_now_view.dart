@@ -77,7 +77,6 @@ class HungryNowView extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal:  horizontalPad, vertical:  24),
           child: Column(
             children: [
-              const SpacerWidget(height: 3),
               Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -87,7 +86,7 @@ class HungryNowView extends StatelessWidget {
              child:  HungryNowView._asset(vm.model.topIcon, w: 60, h: 60)
                 
               ),                
-              const SpacerWidget(height: 6),
+              const SpacerWidget(height: 2),
               const CustomTextWidget(
                 text:  'Hungry Now',
                 textAlign: TextAlign.center,
@@ -108,9 +107,12 @@ class HungryNowView extends StatelessWidget {
                   color: AppColors.text,
                 
               ),
-              const SpacerWidget(height: 8),
+              const SpacerWidget(height: 4),
               _ToggleRow(vm: vm),
-              const SpacerWidget(height: 3),
+              const SpacerWidget(height: 4),
+              Align(
+                alignment: AlignmentGeometry.centerLeft,
+                child: CustomTextWidget(text: "Features", fontWeight: FontWeight.bold, fontSize: 18,)),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -120,14 +122,21 @@ class HungryNowView extends StatelessWidget {
                 ],
               ),
               SpacerWidget(height: 3), 
-              const CustomTextWidget(
-               text:  'When you turn thison, your profile becomes visible to people who also want to dine now.',
-                textAlign: TextAlign.center,
-               
-                  fontFamily: _font,
-                  fontSize: 14,
-                  color: AppColors.text,
-                
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.gray200.withValues(alpha: 0.15), 
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: const CustomTextWidget(
+                 text:  'When you turn this on, your profile becomes visible to people who also want to dine now.',
+                  textAlign: TextAlign.center,
+                 
+                    fontFamily: _font,
+                    fontSize: 14,
+                    color: AppColors.text,
+                  
+                ),
               ),
             ],
           ),
@@ -269,8 +278,13 @@ class _BulletRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.gray200.withValues(alpha: 0.4)), 
+        borderRadius: BorderRadius.circular(18)
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+      margin: EdgeInsets.symmetric(vertical: 6),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [

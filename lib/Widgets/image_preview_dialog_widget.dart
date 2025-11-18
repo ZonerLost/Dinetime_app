@@ -28,7 +28,7 @@ class HeroImageViewer extends StatelessWidget {
         child: Material(
           color: Colors.transparent,
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
+            // borderRadius: BorderRadius.circular(12),
             child: Image.asset(
               image,
               fit: BoxFit.cover,
